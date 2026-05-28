@@ -39,7 +39,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            font-family: 'Courier New', Courier, monospace; /* Tocco più hacker/master */
+            font-family: 'Courier New', Courier, monospace;
             background-color: var(--bg-color);
             color: var(--text-color);
             display: flex;
@@ -48,6 +48,7 @@
             height: 100vh;
             overflow: hidden;
             transition: all 0.3s ease;
+            position: relative;
         }
 
         header {
@@ -170,11 +171,34 @@
             .key { height: 45px; font-size: 1rem; }
             .row { gap: 4px; }
         }
+
+        /* STILE PULSANTE EXIT GRIGIO SCURO INTEGRATO */
+        .exit-button {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 2rem;
+            line-height: 1;
+            color: var(--empty-border); /* Grigio scuro come le linee della griglia vuota */
+            text-decoration: none;
+            z-index: 100;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+            font-family: Arial, sans-serif;
+        }
+        .exit-button:hover {
+            color: var(--text-color); /* Diventa grigio chiaro quando ci passi sopra */
+            transform: scale(1.1);
+        }
+        @media (max-width: 600px) {
+            .setup-title { margin-top: 40px; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Schermata Iniziale -->
+    <a href="https://mastersabba.github.io/MasterSabba/" class="exit-button" title="Torna all'Hub">×</a>
+
     <div id="setup-screen">
         <h1 class="setup-title"><span class="master-text">MASTER</span>WORDLE</h1>
         <p style="margin-bottom: 20px; color: var(--filled-border);">Seleziona la difficoltà:</p>
@@ -231,12 +255,10 @@
         let currentGuessIndex = 0;
         let isGameOver = false;
 
-        // Gestione Salvataggio Statistiche (Local Storage Garantito)
         let stats = JSON.parse(localStorage.getItem('masterWoordleStats')) || {
             played: 0, wins: 0, currentStreak: 0, maxStreak: 0, points: 0
         };
 
-        // Aggiorna subito il counter in alto
         document.getElementById("global-points").innerHTML = `🪙 ${stats.points}`;
 
         const board = document.getElementById("board");
@@ -335,7 +357,6 @@
             const guessArray = guess.split("");
             const feedback = Array(WORD_LENGTH).fill("absent");
 
-            // Precisione Feedback: 1° Verdi, 2° Gialli
             for (let i = 0; i < WORD_LENGTH; i++) {
                 if (guessArray[i] === targetArray[i]) {
                     feedback[i] = "correct";
@@ -367,7 +388,7 @@
                         keyEl.classList.add(feedback[i]);
                     }
                 }, delay);
-                delay += 250; // Animazione leggermente più veloce
+                delay += 250;
             }
 
             setTimeout(() => {
@@ -388,7 +409,6 @@
             }
         }
 
-        // Sistema Punteggio Dinamico e Salvataggio Local Storage
         function updateStats(isWin) {
             isGameOver = true;
             stats.played++;
@@ -398,7 +418,6 @@
                 stats.currentStreak++;
                 if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
                 
-                // Moltiplicatore Difficoltà: 4 lettere (x1), 5 lettere (x2), 6 lettere (x3)
                 const difficultyMultiplier = WORD_LENGTH - 3;
                 const basePoints = (MAX_TRIES - currentGuessIndex) * 15;
                 const pointsGained = basePoints * difficultyMultiplier;
@@ -408,10 +427,8 @@
                 stats.currentStreak = 0;
             }
 
-            // SALVATAGGIO AUTOMATICO RICHIESTO
             localStorage.setItem('masterWoordleStats', JSON.stringify(stats));
             
-            // Aggiorna counter visivo header e mostra indicatore di salvataggio
             document.getElementById("global-points").innerHTML = `🪙 ${stats.points}`;
             const saveIndicator = document.getElementById("save-indicator");
             saveIndicator.style.opacity = 1;
@@ -446,7 +463,6 @@
             }
         }
 
-        // Condivisione
         document.getElementById("share-btn").addEventListener("click", () => {
             let diffStr = WORD_LENGTH === 4 ? "Facile" : WORD_LENGTH === 5 ? "Standard" : "MASTER";
             let shareText = `MasterWordle (${diffStr}) ${currentGuessIndex + 1}/${MAX_TRIES}\nPunti totali: ${stats.points} 🪙\n\n`;
@@ -466,7 +482,6 @@
             });
         });
 
-        // Event Listeners base
         document.addEventListener("keydown", (e) => {
             if (document.getElementById("setup-screen").style.display !== "none") return;
             handleInput(e.key);
@@ -477,12 +492,10 @@
             initBoard();
         });
         
-        // Gestione Tema
         document.getElementById("theme-toggle").addEventListener("click", () => {
             const html = document.documentElement;
             html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
         });
-
     </script>
 </body>
 </html>
