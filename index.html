@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MasterWordle</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --text-color: #c9d1d9;
+            --empty-bg: #0d1117;
+            --empty-border: #30363d;
+            --filled-border: #8b949e;
+            --key-bg: #21262d;
+            --key-text: #c9d1d9;
+            --correct-bg: #2ea043;
+            --present-bg: #d29922;
+            --absent-bg: #30363d;
+            --modal-bg: #161b22;
+            --glow: 0 0 10px rgba(46, 160, 67, 0.5);
+            --cols: 5;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f6f8fa;
+            --text-color: #24292f;
+            --empty-bg: #ffffff;
+            --empty-border: #d0d7de;
+            --filled-border: #57606a;
+            --key-bg: #ebf0f4;
+            --key-text: #24292f;
+            --correct-bg: #1a7f37;
+            --present-bg: #bf8700;
+            --absent-bg: #6e7781;
+            --modal-bg: #ffffff;
+            --glow: none;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Courier New', Courier, monospace; /* Tocco più hacker/master */
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        header {
+            width: 100%; max-width: 600px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; border-bottom: 1px solid var(--empty-border);
+        }
+
+        h1 { font-size: 1.8rem; font-weight: 900; letter-spacing: 2px; margin: 0; }
+        .master-text { color: var(--correct-bg); text-shadow: var(--glow); }
+
+        .header-btns { display: flex; gap: 15px; align-items: center; }
+        .header-btns button {
+            background: none; border: none; color: var(--text-color);
+            font-size: 1.5rem; cursor: pointer; transition: transform 0.2s;
+        }
+        .header-btns button:hover { transform: scale(1.1); }
+
+        .points-display {
+            font-size: 1rem; font-weight: bold; color: var(--present-bg);
+            display: flex; align-items: center; gap: 5px;
+        }
+
+        /* Schermata Selezione Modalità */
+        #setup-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-color); z-index: 20;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .setup-title { margin-bottom: 30px; font-size: 2rem; text-align: center; }
+        .mode-btn {
+            background-color: var(--key-bg); color: var(--text-color);
+            border: 2px solid var(--empty-border); padding: 15px 40px; margin: 10px;
+            font-size: 1.2rem; font-weight: bold; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s; width: 250px; font-family: inherit;
+        }
+        .mode-btn:hover { border-color: var(--correct-bg); box-shadow: var(--glow); transform: translateY(-2px); }
+
+        main {
+            display: flex; flex-direction: column; align-items: center; flex-grow: 1;
+            justify-content: center; width: 100%; max-width: 600px; padding: 10px; display: none;
+        }
+
+        #board { display: grid; grid-template-rows: repeat(6, 1fr); gap: 6px; margin-bottom: 20px; }
+        
+        /* Layout Dinamico Colonne */
+        .row { display: grid; grid-template-columns: repeat(var(--cols), 1fr); gap: 6px; }
+
+        .tile {
+            width: 55px; height: 55px;
+            border: 2px solid var(--empty-border);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 2rem; font-weight: bold; text-transform: uppercase;
+            background-color: var(--empty-bg); transition: transform 0.1s;
+            border-radius: 4px;
+        }
+
+        .tile.filled { border-color: var(--filled-border); animation: pop 0.1s; }
+        @keyframes pop { 50% { transform: scale(1.1); } }
+        .tile.flip { animation: flip 0.6s ease forwards; }
+        @keyframes flip {
+            0% { transform: rotateX(0); }
+            50% { transform: rotateX(90deg); }
+            100% { transform: rotateX(0); }
+        }
+
+        #keyboard { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+        .keyboard-row { display: flex; justify-content: center; gap: 6px; }
+        .key {
+            background-color: var(--key-bg); color: var(--key-text);
+            border: none; border-radius: 4px; height: 58px; flex: 1;
+            display: flex; justify-content: center; align-items: center;
+            font-weight: bold; font-size: 1.2rem; cursor: pointer;
+            text-transform: uppercase; transition: all 0.2s; font-family: inherit;
+        }
+        .key.large { flex: 1.5; font-size: 1rem; }
+        
+        .correct { background-color: var(--correct-bg) !important; color: white !important; border-color: var(--correct-bg) !important; box-shadow: var(--glow); }
+        .present { background-color: var(--present-bg) !important; color: white !important; border-color: var(--present-bg) !important; }
+        .absent { background-color: var(--absent-bg) !important; color: white !important; border-color: var(--absent-bg) !important; opacity: 0.6; }
+
+        /* Modal */
+        #modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 10;
+        }
+        .modal-content {
+            background-color: var(--modal-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--empty-border);
+            text-align: center; max-width: 350px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .modal-content h2 { margin-bottom: 20px; font-weight: bold; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stat-box { display: flex; flex-direction: column; background: var(--bg-color); padding: 10px; border-radius: 6px; border: 1px solid var(--empty-border); }
+        .stat-num { font-size: 1.8rem; font-weight: bold; color: var(--correct-bg); }
+        .stat-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
+        
+        .btn-action {
+            background-color: var(--correct-bg); color: white; border: none; font-family: inherit;
+            padding: 12px 20px; font-size: 1.1rem; border-radius: 4px; cursor: pointer;
+            margin: 5px 0; width: 100%; font-weight: bold; transition: opacity 0.2s;
+        }
+        .btn-action:hover { opacity: 0.9; }
+        .btn-secondary { background-color: var(--absent-bg); }
+        .btn-menu { background-color: var(--key-bg); color: var(--text-color); border: 1px solid var(--empty-border); }
+
+        #message {
+            position: fixed; top: 80px; background-color: var(--text-color);
+            color: var(--bg-color); padding: 12px 25px; border-radius: 4px;
+            font-weight: bold; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-family: inherit;
+        }
+
+        #save-indicator {
+            position: fixed; bottom: 10px; right: 10px; font-size: 0.8rem;
+            color: var(--present-bg); opacity: 0; transition: opacity 0.5s;
+        }
+
+        @media (max-width: 450px) {
+            .tile { width: 45px; height: 45px; font-size: 1.5rem; }
+            .key { height: 45px; font-size: 1rem; }
+            .row { gap: 4px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Schermata Iniziale -->
+    <div id="setup-screen">
+        <h1 class="setup-title"><span class="master-text">MASTER</span>WORDLE</h1>
+        <p style="margin-bottom: 20px; color: var(--filled-border);">Seleziona la difficoltà:</p>
+        <button class="mode-btn" onclick="startGame(4)">4 Lettere (Facile)</button>
+        <button class="mode-btn" onclick="startGame(5)">5 Lettere (Standard)</button>
+        <button class="mode-btn" style="border-color: var(--correct-bg); box-shadow: var(--glow);" onclick="startGame(6)">6 Lettere (MASTER)</button>
+    </div>
+
+    <header>
+        <h1><span class="master-text">MASTER</span>WORDLE</h1>
+        <div class="header-btns">
+            <div class="points-display" id="global-points" title="Punti salvati nel LocalStorage">🪙 0</div>
+            <button id="theme-toggle" title="Cambia Tema">🌓</button>
+            <button id="stats-toggle" title="Statistiche">📊</button>
+        </div>
+    </header>
+
+    <div id="message"></div>
+    <div id="save-indicator">💾 Salvato in LocalStorage</div>
+
+    <main id="game-main">
+        <div id="board"></div>
+        <div id="keyboard"></div>
+    </main>
+
+    <div id="modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Hub Statistiche</h2>
+            <div class="stats-grid">
+                <div class="stat-box"><span class="stat-num" id="stat-played">0</span><span class="stat-label">Partite</span></div>
+                <div class="stat-box"><span class="stat-num" id="stat-win">0%</span><span class="stat-label">Vittorie</span></div>
+                <div class="stat-box"><span class="stat-num" id="stat-streak">0</span><span class="stat-label">Streak</span></div>
+                <div class="stat-box"><span class="stat-num" id="stat-points">0</span><span class="stat-label">Punteggio Totale</span></div>
+            </div>
+            <button id="share-btn" class="btn-action" style="display: none;">Condividi Risultato 📤</button>
+            <button id="restart-btn" class="btn-action" style="display: none;">Prossima Sfida 🔄</button>
+            <button id="menu-btn" class="btn-action btn-menu" style="display: none;" onclick="returnToMenu()">Cambia Modalità 🔙</button>
+            <button onclick="document.getElementById('modal').style.display='none'" class="btn-action btn-secondary">Chiudi</button>
+        </div>
+    </div>
+
+    <script>
+        // --- DIZIONARI AMPLIATI E COMPLESSI ---
+        const DICTIONARIES = {
+            4: ["CAOS", "MITO", "EROE", "FATO", "BUIO", "GELO", "OASI", "ARTE", "DATO", "IENA", "LUNA", "NERO", "PANE", "RISO", "SOLE", "TEMA", "URTO", "VERO", "ZERO", "ALBA", "CENA", "DITO", "ELFO", "FARO", "GARA", "LAGO", "MARE", "NODO", "ORSO", "PESO", "RANA", "SETE", "TOPO", "VINO", "ZONA", "ABUS", "EBRO", "OPUS", "URNE", "ZIGO", "CETO", "DOGE", "ECHE", "FUNE", "GOTA", "IDRO", "IUTA", "LARI", "MORO", "NIDO", "ONTA", "PECE", "RADE", "SAIO", "TACE", "UGGE", "VATE", "ZELO"],
+            5: ["XENON", "GHEBO", "ZOLFO", "SFING", "QUASI", "FLUTT", "AMPIO", "BOZZA", "CEFFO", "DRAGA", "ELUDA", "FOIBA", "GIGLI", "IMBUT", "LICEI", "MUFFA", "NESSI", "OVVIO", "PIEVE", "SQUAW", "TRUCE", "UMILI", "VIZIO", "ZAPPA", "ABATE", "BACCO", "CAUTO", "DENSO", "EBANO", "FAIDA", "GOBBO", "HAITI", "ICONA", "LAUTO", "MADIA", "NAFTA", "OVALE", "PACCO", "QUOTA", "RABBI", "SACRO", "TASSO", "UDITO", "VASTO", "ZUFFA", "ACUME", "CEDRO", "DRAGO", "ESULE", "FOSSA", "IELLA", "LINCE", "MESSE", "NINFA", "OPERA", "PIEGA", "RESTO", "SESSO", "TRAMA", "USURA", "ZEPPA", "KARMA"],
+            6: ["ABISSO", "IGNAVO", "ONESTO", "SANGUE", "SQUAMA", "TRENCH", "UTOPIA", "VORTIC", "BRULLO", "CHIOSA", "DEDALO", "EMPITO", "ZERINI", "ZIGOMI", "ZUFOLI", "ANDARE", "BIANCO", "CENTRO", "DIVANO", "ESTATE", "FAVOLA", "GIALLO", "IGNOTO", "LAVORO", "MATITA", "NATURA", "ORARIO", "QUADRO", "REGALO", "SALUTE", "TAVOLO", "USCITA", "VALORE", "ALUNNO", "BARONE", "CADUTA", "DEBOLE", "ERRATO", "FISICO", "GROSSO", "IMPERO", "LEGAME", "METODO", "NUVOLA", "OTTAVO", "PAROLA", "QUIETO", "RIPOSO", "STRADA", "TESORO", "VEDERE", "CHIESA", "DUBBIO", "ESTESO", "FREDDO", "GIORNO", "IMBUTO", "MOSTRO", "NEBBIA", "OSCURO", "POPOLO", "QUARZO", "ROCCIA", "SPIRTO", "TRUCCO", "URBANO", "VELENO"]
+        };
+
+        const MAX_TRIES = 6;
+        let WORD_LENGTH = 5;
+        let targetWord = "";
+        let guesses = [];
+        let currentGuessIndex = 0;
+        let isGameOver = false;
+
+        // Gestione Salvataggio Statistiche (Local Storage Garantito)
+        let stats = JSON.parse(localStorage.getItem('masterWoordleStats')) || {
+            played: 0, wins: 0, currentStreak: 0, maxStreak: 0, points: 0
+        };
+
+        // Aggiorna subito il counter in alto
+        document.getElementById("global-points").innerHTML = `🪙 ${stats.points}`;
+
+        const board = document.getElementById("board");
+        const keyboard = document.getElementById("keyboard");
+        const messageBox = document.getElementById("message");
+
+        const keys = [
+            ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+            ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+            ["ENTER", "Z", "X", "C", "V", "B", "N", "M", "DEL"]
+        ];
+
+        function startGame(length) {
+            WORD_LENGTH = length;
+            document.documentElement.style.setProperty('--cols', WORD_LENGTH);
+            document.getElementById("setup-screen").style.display = "none";
+            document.getElementById("game-main").style.display = "flex";
+            initBoard();
+        }
+
+        function returnToMenu() {
+            document.getElementById("modal").style.display = "none";
+            document.getElementById("game-main").style.display = "none";
+            document.getElementById("setup-screen").style.display = "flex";
+        }
+
+        function initBoard() {
+            const dict = DICTIONARIES[WORD_LENGTH];
+            targetWord = dict[Math.floor(Math.random() * dict.length)];
+            guesses = Array.from({ length: MAX_TRIES }, () => "");
+            currentGuessIndex = 0;
+            isGameOver = false;
+            
+            board.innerHTML = "";
+            for (let i = 0; i < MAX_TRIES; i++) {
+                const row = document.createElement("div");
+                row.className = "row";
+                for (let j = 0; j < WORD_LENGTH; j++) {
+                    const tile = document.createElement("div");
+                    tile.className = "tile";
+                    tile.id = `tile-${i}-${j}`;
+                    row.appendChild(tile);
+                }
+                board.appendChild(row);
+            }
+
+            keyboard.innerHTML = "";
+            keys.forEach(row => {
+                const rowEl = document.createElement("div");
+                rowEl.className = "keyboard-row";
+                row.forEach(key => {
+                    const keyEl = document.createElement("button");
+                    keyEl.className = `key ${key === 'ENTER' || key === 'DEL' ? 'large' : ''}`;
+                    keyEl.textContent = key === 'DEL' ? '⌫' : key;
+                    keyEl.id = `key-${key}`;
+                    keyEl.onclick = () => handleInput(key);
+                    rowEl.appendChild(keyEl);
+                });
+                keyboard.appendChild(rowEl);
+            });
+
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('share-btn').style.display = 'none';
+            document.getElementById('restart-btn').style.display = 'none';
+            document.getElementById('menu-btn').style.display = 'none';
+        }
+
+        function handleInput(key) {
+            if (isGameOver) return;
+            let currentWord = guesses[currentGuessIndex];
+
+            if (key === "DEL" || key === "Backspace") {
+                guesses[currentGuessIndex] = currentWord.slice(0, -1);
+                updateGrid();
+            } else if (key === "ENTER" || key === "Enter") {
+                if (currentWord.length === WORD_LENGTH) checkWord();
+                else showMessage("Parola troppo corta!");
+            } else if (currentWord.length < WORD_LENGTH && /^[A-Z]$/.test(key.toUpperCase())) {
+                guesses[currentGuessIndex] += key.toUpperCase();
+                updateGrid();
+            }
+        }
+
+        function updateGrid() {
+            const currentWord = guesses[currentGuessIndex];
+            for (let i = 0; i < WORD_LENGTH; i++) {
+                const tile = document.getElementById(`tile-${currentGuessIndex}-${i}`);
+                tile.textContent = currentWord[i] || "";
+                tile.className = currentWord[i] ? "tile filled" : "tile";
+            }
+        }
+
+        function checkWord() {
+            const guess = guesses[currentGuessIndex];
+            const targetArray = targetWord.split("");
+            const guessArray = guess.split("");
+            const feedback = Array(WORD_LENGTH).fill("absent");
+
+            // Precisione Feedback: 1° Verdi, 2° Gialli
+            for (let i = 0; i < WORD_LENGTH; i++) {
+                if (guessArray[i] === targetArray[i]) {
+                    feedback[i] = "correct";
+                    targetArray[i] = null; 
+                    guessArray[i] = null;
+                }
+            }
+            for (let i = 0; i < WORD_LENGTH; i++) {
+                if (guessArray[i] && targetArray.includes(guessArray[i])) {
+                    feedback[i] = "present";
+                    targetArray[targetArray.indexOf(guessArray[i])] = null;
+                }
+            }
+            animateRow(guess, feedback);
+        }
+
+        function animateRow(guess, feedback) {
+            isGameOver = true; 
+            let delay = 0;
+
+            for (let i = 0; i < WORD_LENGTH; i++) {
+                setTimeout(() => {
+                    const tile = document.getElementById(`tile-${currentGuessIndex}-${i}`);
+                    tile.classList.add("flip", feedback[i]);
+                    
+                    const keyEl = document.getElementById(`key-${guess[i]}`);
+                    if (!keyEl.classList.contains("correct")) {
+                        keyEl.classList.remove("present", "absent");
+                        keyEl.classList.add(feedback[i]);
+                    }
+                }, delay);
+                delay += 250; // Animazione leggermente più veloce
+            }
+
+            setTimeout(() => {
+                isGameOver = false;
+                evaluateGame(guess, feedback);
+            }, delay + 200);
+        }
+
+        function evaluateGame(guess, feedback) {
+            if (guess === targetWord) {
+                showMessage("MASTER MINDS THINK ALIKE!", true);
+                updateStats(true);
+            } else if (currentGuessIndex === MAX_TRIES - 1) {
+                showMessage(`GAME OVER. La parola era: ${targetWord}`, true);
+                updateStats(false);
+            } else {
+                currentGuessIndex++;
+            }
+        }
+
+        // Sistema Punteggio Dinamico e Salvataggio Local Storage
+        function updateStats(isWin) {
+            isGameOver = true;
+            stats.played++;
+            
+            if (isWin) {
+                stats.wins++;
+                stats.currentStreak++;
+                if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
+                
+                // Moltiplicatore Difficoltà: 4 lettere (x1), 5 lettere (x2), 6 lettere (x3)
+                const difficultyMultiplier = WORD_LENGTH - 3;
+                const basePoints = (MAX_TRIES - currentGuessIndex) * 15;
+                const pointsGained = basePoints * difficultyMultiplier;
+                
+                stats.points += pointsGained;
+            } else {
+                stats.currentStreak = 0;
+            }
+
+            // SALVATAGGIO AUTOMATICO RICHIESTO
+            localStorage.setItem('masterWoordleStats', JSON.stringify(stats));
+            
+            // Aggiorna counter visivo header e mostra indicatore di salvataggio
+            document.getElementById("global-points").innerHTML = `🪙 ${stats.points}`;
+            const saveIndicator = document.getElementById("save-indicator");
+            saveIndicator.style.opacity = 1;
+            setTimeout(() => saveIndicator.style.opacity = 0, 3000);
+            
+            setTimeout(() => showStatsModal(isWin), 1500);
+        }
+
+        function showMessage(msg, keepAlive = false) {
+            messageBox.textContent = msg;
+            messageBox.style.opacity = 1;
+            if (!keepAlive) setTimeout(() => messageBox.style.opacity = 0, 2000);
+        }
+
+        function showStatsModal(gameEnded = false) {
+            document.getElementById("modal").style.display = "flex";
+            document.getElementById("stat-played").textContent = stats.played;
+            document.getElementById("stat-win").textContent = stats.played > 0 ? Math.round((stats.wins / stats.played) * 100) + "%" : "0%";
+            document.getElementById("stat-streak").textContent = stats.currentStreak;
+            document.getElementById("stat-points").textContent = stats.points;
+
+            if (gameEnded) {
+                document.getElementById("modal-title").textContent = "Analisi Partita";
+                document.getElementById("share-btn").style.display = "block";
+                document.getElementById("restart-btn").style.display = "block";
+                document.getElementById("menu-btn").style.display = "block";
+            } else {
+                document.getElementById("modal-title").textContent = "Hub Statistiche";
+                document.getElementById("share-btn").style.display = "none";
+                document.getElementById("restart-btn").style.display = "none";
+                document.getElementById("menu-btn").style.display = "none";
+            }
+        }
+
+        // Condivisione
+        document.getElementById("share-btn").addEventListener("click", () => {
+            let diffStr = WORD_LENGTH === 4 ? "Facile" : WORD_LENGTH === 5 ? "Standard" : "MASTER";
+            let shareText = `MasterWordle (${diffStr}) ${currentGuessIndex + 1}/${MAX_TRIES}\nPunti totali: ${stats.points} 🪙\n\n`;
+            for (let i = 0; i <= currentGuessIndex; i++) {
+                let rowText = "";
+                for (let j = 0; j < WORD_LENGTH; j++) {
+                    const tile = document.getElementById(`tile-${i}-${j}`);
+                    if (tile.classList.contains("correct")) rowText += "🟩";
+                    else if (tile.classList.contains("present")) rowText += "🟨";
+                    else rowText += "⬛";
+                }
+                shareText += rowText + "\n";
+            }
+            
+            navigator.clipboard.writeText(shareText).then(() => {
+                showMessage("Log copiato negli appunti!");
+            });
+        });
+
+        // Event Listeners base
+        document.addEventListener("keydown", (e) => {
+            if (document.getElementById("setup-screen").style.display !== "none") return;
+            handleInput(e.key);
+        });
+        document.getElementById("stats-toggle").addEventListener("click", () => showStatsModal());
+        document.getElementById("restart-btn").addEventListener("click", () => {
+            messageBox.style.opacity = 0;
+            initBoard();
+        });
+        
+        // Gestione Tema
+        document.getElementById("theme-toggle").addEventListener("click", () => {
+            const html = document.documentElement;
+            html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
+        });
+
+    </script>
+</body>
+</html>
