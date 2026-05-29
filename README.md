@@ -10,7 +10,7 @@ Il gioco include:
 - Condivisione risultati stile Wordle
 - Compatibile desktop e mobile
 
-È collegato alla repository centrale MasterHub (https://mastersabba.github.io/MasterSabba/), piena di altri minigame.
+È collegato alla repository centrale MasterGames (https://mastersabba.github.io/MasterSabba/), piena di altri minigame.
 
 ![Immagine](IMG_9423.jpeg)
 ![Immagine](IMG_9424.jpeg)
