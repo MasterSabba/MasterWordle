@@ -1,4 +1,4 @@
-#MasterWordle
+# MasterWordle
 
 MasterWordle è un word game ispirato a Wordle con modalità multiple, statistiche salvate e difficoltà progressive. Indovina la parola segreta nel minor numero di tentativi possibile.
 
