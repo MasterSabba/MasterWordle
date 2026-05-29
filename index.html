@@ -243,10 +243,47 @@
     <script>
         // --- DIZIONARI AMPLIATI E COMPLESSI ---
         const DICTIONARIES = {
-            4: ["CAOS", "MITO", "EROE", "FATO", "BUIO", "GELO", "OASI", "ARTE", "DATO", "IENA", "LUNA", "NERO", "PANE", "RISO", "SOLE", "TEMA", "URTO", "VERO", "ZERO", "ALBA", "CENA", "DITO", "ELFO", "FARO", "GARA", "LAGO", "MARE", "NODO", "ORSO", "PESO", "RANA", "SETE", "TOPO", "VINO", "ZONA", "ABUS", "EBRO", "OPUS", "URNE", "ZIGO", "CETO", "DOGE", "ECHE", "FUNE", "GOTA", "IDRO", "IUTA", "LARI", "MORO", "NIDO", "ONTA", "PECE", "RADE", "SAIO", "TACE", "UGGE", "VATE", "ZELO"],
-            5: ["XENON", "GHEBO", "ZOLFO", "SFING", "QUASI", "FLUTT", "AMPIO", "BOZZA", "CEFFO", "DRAGA", "ELUDA", "FOIBA", "GIGLI", "IMBUT", "LICEI", "MUFFA", "NESSI", "OVVIO", "PIEVE", "SQUAW", "TRUCE", "UMILI", "VIZIO", "ZAPPA", "ABATE", "BACCO", "CAUTO", "DENSO", "EBANO", "FAIDA", "GOBBO", "HAITI", "ICONA", "LAUTO", "MADIA", "NAFTA", "OVALE", "PACCO", "QUOTA", "RABBI", "SACRO", "TASSO", "UDITO", "VASTO", "ZUFFA", "ACUME", "CEDRO", "DRAGO", "ESULE", "FOSSA", "IELLA", "LINCE", "MESSE", "NINFA", "OPERA", "PIEGA", "RESTO", "SESSO", "TRAMA", "USURA", "ZEPPA", "KARMA"],
-            6: ["ABISSO", "IGNAVO", "ONESTO", "SANGUE", "SQUAMA", "TRENCH", "UTOPIA", "VORTIC", "BRULLO", "CHIOSA", "DEDALO", "EMPITO", "ZERINI", "ZIGOMI", "ZUFOLI", "ANDARE", "BIANCO", "CENTRO", "DIVANO", "ESTATE", "FAVOLA", "GIALLO", "IGNOTO", "LAVORO", "MATITA", "NATURA", "ORARIO", "QUADRO", "REGALO", "SALUTE", "TAVOLO", "USCITA", "VALORE", "ALUNNO", "BARONE", "CADUTA", "DEBOLE", "ERRATO", "FISICO", "GROSSO", "IMPERO", "LEGAME", "METODO", "NUVOLA", "OTTAVO", "PAROLA", "QUIETO", "RIPOSO", "STRADA", "TESORO", "VEDERE", "CHIESA", "DUBBIO", "ESTESO", "FREDDO", "GIORNO", "IMBUTO", "MOSTRO", "NEBBIA", "OSCURO", "POPOLO", "QUARZO", "ROCCIA", "SPIRTO", "TRUCCO", "URBANO", "VELENO"]
-        };
+    4: [
+        "CAOS", "MITO", "EROE", "FATO", "BUIO", "GELO", "OASI", "ARTE",
+        "DATO", "IENA", "LUNA", "NERO", "PANE", "RISO", "SOLE", "TEMA",
+        "URTO", "VERO", "ZERO", "ALBA", "CENA", "DITO", "ELFO", "FARO",
+        "GARA", "LAGO", "MARE", "NODO", "ORSO", "PESO", "RANA", "SETE",
+        "TOPO", "VINO", "ZONA", "FILO", "ROSA", "VENTO", "LUME", "PIEDE",
+        "SPAZ", "FIORE", "CUORE", "MENTE", "SOGNO", "PAURA", "TEMPO"
+    ],
+
+    5: [
+        "XENON", "GHEBO", "ZOLFO", "SFINGE", "QUASI", "FLUTTO", "AMPIO",
+        "BOZZA", "CEFFO", "DRAGA", "ELUDA", "FOIBA", "GIGLI", "IMBUTO",
+        "LICEI", "MUFFA", "NESSI", "OVVIO", "PIEVE", "TRUCE", "UMILI",
+        "VIZIO", "ZAPPA", "ABATE", "BACCO", "CAUTO", "DENSO", "EBANO",
+        "FAIDA", "GOBBO", "ICONA", "LAUTO", "MADIA", "NAFTA", "OVALE",
+        "PACCO", "QUOTA", "RABBI", "SACRO", "TASSO", "UDITO", "VASTO",
+        "ZUFFA", "ACUME", "CEDRO", "DRAGO", "ESULE", "FOSSA", "IELLA",
+        "LINCE", "MESSE", "NINFA", "OPERA", "PIEGA", "RESTO", "TRAMA",
+        "USURA", "ZEPPA", "KARMA",
+
+        "LUCE", "VENTO", "SENNO", "BRAVO", "SALTO", "PIANO", "CERCA",
+        "VISTA", "FONDO", "LARGO", "GIUSTO", "PRIMO", "NUOVO"
+    ],
+
+    6: [
+        "ABISSO", "IGNAVO", "ONESTO", "SANGUE", "SQUAMA", "UTOPIA",
+        "VORTICE", "BRULLO", "CHIOSA", "DEDALO", "EMPITO", "BIANCO",
+        "CENTRO", "DIVANO", "ESTATE", "FAVOLA", "GIALLO", "IGNOTO",
+        "LAVORO", "MATITA", "NATURA", "ORARIO", "QUADRO", "REGALO",
+        "SALUTE", "TAVOLO", "USCITA", "VALORE", "ALUNNO", "BARONE",
+        "CADUTA", "DEBOLE", "ERRATO", "FISICO", "GROSSO", "IMPERO",
+        "LEGAME", "METODO", "NUVOLA", "OTTAVO", "PAROLA", "QUIETO",
+        "RIPOSO", "STRADA", "TESORO", "VEDERE", "CHIESA", "DUBBIO",
+        "ESTESO", "FREDDO", "GIORNO", "IMBUTO", "MOSTRO", "NEBBIA",
+        "OSCURO", "POPOLO", "QUARZO", "ROCCIA", "SPIRTO", "TRUCCO",
+        "URBANO", "VELENO",
+
+        "SILENZIO", "MUSICA", "FUTURO", "PASSATO", "RAGIONE",
+        "VIAGGIO", "GHIACCIO", "CAMPANA", "FRAGILE", "LUMINOSO"
+    ]
+            };
 
         const MAX_TRIES = 6;
         let WORD_LENGTH = 5;
