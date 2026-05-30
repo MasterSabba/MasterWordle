@@ -179,7 +179,7 @@
             left: 20px;
             font-size: 2rem;
             line-height: 1;
-            color: var(--empty-border); /* Grigio scuro come le linee della griglia vuota */
+            color: var(--empty-border);
             text-decoration: none;
             z-index: 100;
             transition: all 0.2s ease;
@@ -187,7 +187,7 @@
             font-family: Arial, sans-serif;
         }
         .exit-button:hover {
-            color: var(--text-color); /* Diventa grigio chiaro quando ci passi sopra */
+            color: var(--text-color);
             transform: scale(1.1);
         }
         @media (max-width: 600px) {
@@ -243,41 +243,39 @@
     <script>
         // --- DIZIONARI AMPLIATI E COMPLESSI ---
         const DICTIONARIES = {
-    4: [
-        "CAOS", "MITO", "EROE", "FATO", "BUIO", "GELO", "OASI", "ARTE",
-        "DATO", "IENA", "LUNA", "NERO", "PANE", "RISO", "SOLE", "TEMA",
-        "URTO", "VERO", "ZERO", "ALBA", "CENA", "DITO", "ELFO", "FARO",
-        "GARA", "LAGO", "MARE", "NODO", "ORSO", "PESO", "RANA", "SETE",
-        "TOPO", "VINO", "ZONA", "FILO", "ROSA", "LUME", "LUCE", "CANE"
-    ],
-
-    5: [
-        "XENON", "GHEBO", "ZOLFO", "SFINGE", "QUASI", "FLUTTO", "AMPIO",
-        "BOZZA", "CEFFO", "DRAGA", "ELUDA", "FOIBA", "GIGLI", "IMBUTO",
-        "LICEI", "MUFFA", "NESSI", "OVVIO", "PIEVE", "TRUCE", "UMILI",
-        "VIZIO", "ZAPPA", "ABATE", "BACCO", "CAUTO", "DENSO", "EBANO",
-        "FAIDA", "GOBBO", "ICONA", "LAUTO", "MADIA", "NAFTA", "OVALE",
-        "PACCO", "QUOTA", "RABBI", "SACRO", "TASSO", "UDITO", "VASTO",
-        "ZUFFA", "ACUME", "CEDRO", "DRAGO", "ESULE", "FOSSA", "IELLA",
-        "LINCE", "MESSE", "NINFA", "OPERA", "PIEGA", "RESTO", "TRAMA",
-        "USURA", "ZEPPA", "KARMA", "VENTO", "BRAVO", "SALTO", "PIANO",
-        "CERCA", "VISTA", "FONDO", "LARGO", "PRIMO", "NUOVO"
-    ],
-
-    6: [
-        "ABISSO", "IGNAVO", "ONESTO", "SANGUE", "SQUAMA", "UTOPIA",
-        "VORTICE", "BRULLO", "CHIOSA", "DEDALO", "EMPITO", "BIANCO",
-        "CENTRO", "DIVANO", "ESTATE", "FAVOLA", "GIALLO", "IGNOTO",
-        "LAVORO", "MATITA", "NATURA", "ORARIO", "QUADRO", "REGALO",
-        "SALUTE", "TAVOLO", "USCITA", "VALORE", "ALUNNO", "BARONE",
-        "CADUTA", "DEBOLE", "ERRATO", "FISICO", "GROSSO", "IMPERO",
-        "LEGAME", "METODO", "NUVOLA", "OTTAVO", "PAROLA", "QUIETO",
-        "RIPOSO", "STRADA", "TESORO", "VEDERE", "CHIESA", "DUBBIO",
-        "ESTESO", "FREDDO", "GIORNO", "IMBUTO", "MOSTRO", "NEBBIA",
-        "OSCURO", "POPOLO", "QUARZO", "ROCCIA", "SPIRTO", "TRUCCO",
-        "URBANO", "VELENO",
-    ]
-            };
+            4: [
+                "CAOS", "MITO", "EROE", "FATO", "BUIO", "GELO", "OASI", "ARTE",
+                "DATO", "IENA", "LUNA", "NERO", "PANE", "RISO", "SOLE", "TEMA",
+                "URTO", "VERO", "ZERO", "ALBA", "CENA", "DITO", "ELFO", "FARO",
+                "GARA", "LAGO", "MARE", "NODO", "ORSO", "PESO", "RANA", "SETE",
+                "TOPO", "VINO", "ZONA", "FILO", "ROSA", "LUME", "LUCE", "CANE"
+            ],
+            5: [
+                "XENON", "GHEBO", "ZOLFO", "SFINGE", "QUASI", "FLUTTO", "AMPIO",
+                "BOZZA", "CEFFO", "DRAGA", "ELUDA", "FOIBA", "GIGLI", "IMBUTO",
+                "LICEI", "MUFFA", "NESSI", "OVVIO", "PIEVE", "TRUCE", "UMILI",
+                "VIZIO", "ZAPPA", "ABATE", "BACCO", "CAUTO", "DENSO", "EBANO",
+                "FAIDA", "GOBBO", "ICONA", "LAUTO", "MADIA", "NAFTA", "OVALE",
+                "PACCO", "QUOTA", "RABBI", "SACRO", "TASSO", "UDITO", "VASTO",
+                "ZUFFA", "ACUME", "CEDRO", "DRAGO", "ESULE", "FOSSA", "IELLA",
+                "LINCE", "MESSE", "NINFA", "OPERA", "PIEGA", "RESTO", "TRAMA",
+                "USURA", "ZEPPA", "KARMA", "VENTO", "BRAVO", "SALTO", "PIANO",
+                "CERCA", "VISTA", "FONDO", "LARGO", "PRIMO", "NUOVO"
+            ],
+            6: [
+                "ABISSO", "IGNAVO", "ONESTO", "SANGUE", "SQUAMA", "UTOPIA",
+                "VORTICE", "BRULLO", "CHIOSA", "DEDALO", "EMPITO", "BIANCO",
+                "CENTRO", "DIVANO", "ESTATE", "FAVOLA", "GIALLO", "IGNOTO",
+                "LAVORO", "MATITA", "NATURA", "ORARIO", "QUADRO", "REGALO",
+                "SALUTE", "TAVOLO", "USCITA", "VALORE", "ALUNNO", "BARONE",
+                "CADUTA", "DEBOLE", "ERRATO", "FISICO", "GROSSO", "IMPERO",
+                "LEGAME", "METODO", "NUVOLA", "OTTAVO", "PAROLA", "QUIETO",
+                "RIPOSO", "STRADA", "TESORO", "VEDERE", "CHIESA", "DUBBIO",
+                "ESTESO", "FREDDO", "GIORNO", "IMBUTO", "MOSTRO", "NEBBIA",
+                "OSCURO", "POPOLO", "QUARZO", "ROCCIA", "SPIRTO", "TRUCCO",
+                "URBANO", "VELENO"
+            ]
+        };
 
         const MAX_TRIES = 6;
         let WORD_LENGTH = 5;
@@ -285,10 +283,18 @@
         let guesses = [];
         let currentGuessIndex = 0;
         let isGameOver = false;
+        let roundFinished = false; // Gestione stato per la riapertura corretta del Modal
 
-        let stats = JSON.parse(localStorage.getItem('masterWoordleStats')) || {
+        // Controllo se esiste già la chiave corretta o quella vecchia con il typo per non perdere i dati locali esistenti
+        let storageKey = localStorage.getItem('masterWordleStats') ? 'masterWordleStats' : 'masterWoordleStats';
+        let stats = JSON.parse(localStorage.getItem(storageKey)) || {
             played: 0, wins: 0, currentStreak: 0, maxStreak: 0, points: 0
         };
+        // Se usava la vecchia chiave, la normalizziamo su quella corretta
+        if (storageKey === 'masterWoordleStats') {
+            localStorage.setItem('masterWordleStats', JSON.stringify(stats));
+            localStorage.removeItem('masterWoordleStats');
+        }
 
         document.getElementById("global-points").innerHTML = `🪙 ${stats.points}`;
 
@@ -322,6 +328,7 @@
             guesses = Array.from({ length: MAX_TRIES }, () => "");
             currentGuessIndex = 0;
             isGameOver = false;
+            roundFinished = false; 
             
             board.innerHTML = "";
             for (let i = 0; i < MAX_TRIES; i++) {
@@ -358,7 +365,8 @@
         }
 
         function handleInput(key) {
-            if (isGameOver) return;
+            // Blocca l'input se il gioco è finito o se il modal delle info/statistiche è aperto a schermo
+            if (isGameOver || document.getElementById("modal").style.display === "flex") return;
             let currentWord = guesses[currentGuessIndex];
 
             if (key === "DEL" || key === "Backspace") {
@@ -442,6 +450,7 @@
 
         function updateStats(isWin) {
             isGameOver = true;
+            roundFinished = true; // Il round è ufficialmente concluso
             stats.played++;
             
             if (isWin) {
@@ -458,14 +467,14 @@
                 stats.currentStreak = 0;
             }
 
-            localStorage.setItem('masterWoordleStats', JSON.stringify(stats));
+            localStorage.setItem('masterWordleStats', JSON.stringify(stats));
             
             document.getElementById("global-points").innerHTML = `🪙 ${stats.points}`;
             const saveIndicator = document.getElementById("save-indicator");
             saveIndicator.style.opacity = 1;
             setTimeout(() => saveIndicator.style.opacity = 0, 3000);
             
-            setTimeout(() => showStatsModal(isWin), 1500);
+            setTimeout(() => showStatsModal(), 1500);
         }
 
         function showMessage(msg, keepAlive = false) {
@@ -474,14 +483,15 @@
             if (!keepAlive) setTimeout(() => messageBox.style.opacity = 0, 2000);
         }
 
-        function showStatsModal(gameEnded = false) {
+        function showStatsModal() {
             document.getElementById("modal").style.display = "flex";
             document.getElementById("stat-played").textContent = stats.played;
             document.getElementById("stat-win").textContent = stats.played > 0 ? Math.round((stats.wins / stats.played) * 100) + "%" : "0%";
             document.getElementById("stat-streak").textContent = stats.currentStreak;
             document.getElementById("stat-points").textContent = stats.points;
 
-            if (gameEnded) {
+            // Controllo basato sullo stato persistente del round, non sull'evento di trigger
+            if (roundFinished) {
                 document.getElementById("modal-title").textContent = "Analisi Partita";
                 document.getElementById("share-btn").style.display = "block";
                 document.getElementById("restart-btn").style.display = "block";
