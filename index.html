@@ -297,7 +297,7 @@
         }
 
         document.getElementById("global-points").innerHTML = `🪙 ${stats.points}`;
-
+        localStorage.setItem("points_masterwordle", stats.points);
         const board = document.getElementById("board");
         const keyboard = document.getElementById("keyboard");
         const messageBox = document.getElementById("message");
@@ -468,6 +468,7 @@
             }
 
             localStorage.setItem('masterWordleStats', JSON.stringify(stats));
+            localStorage.setItem("points_masterwordle", stats.points);
             
             document.getElementById("global-points").innerHTML = `🪙 ${stats.points}`;
             const saveIndicator = document.getElementById("save-indicator");
