@@ -72,7 +72,6 @@
             display: flex; align-items: center; gap: 5px;
         }
 
-        /* Schermata Selezione Modalità */
         #setup-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--bg-color); z-index: 20;
@@ -93,8 +92,6 @@
         }
 
         #board { display: grid; grid-template-rows: repeat(6, 1fr); gap: 6px; margin-bottom: 20px; }
-        
-        /* Layout Dinamico Colonne */
         .row { display: grid; grid-template-columns: repeat(var(--cols), 1fr); gap: 6px; }
 
         .tile {
@@ -130,7 +127,6 @@
         .present { background-color: var(--present-bg) !important; color: white !important; border-color: var(--present-bg) !important; }
         .absent { background-color: var(--absent-bg) !important; color: white !important; border-color: var(--absent-bg) !important; opacity: 0.6; }
 
-        /* Modal */
         #modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 10;
@@ -166,38 +162,18 @@
             color: var(--present-bg); opacity: 0; transition: opacity 0.5s;
         }
 
-        @media (max-width: 450px) {
-            .tile { width: 45px; height: 45px; font-size: 1.5rem; }
-            .key { height: 45px; font-size: 1rem; }
-            .row { gap: 4px; }
-        }
-
-        /* STILE PULSANTE EXIT GRIGIO SCURO INTEGRATO */
         .exit-button {
-            position: absolute;
-            top: 15px;
-            left: 20px;
-            font-size: 2rem;
-            line-height: 1;
-            color: var(--empty-border);
-            text-decoration: none;
-            z-index: 100;
-            transition: all 0.2s ease;
-            -webkit-tap-highlight-color: transparent;
-            font-family: Arial, sans-serif;
+            position: absolute; top: 15px; left: 20px; font-size: 2rem; line-height: 1;
+            color: var(--empty-border); text-decoration: none; z-index: 100;
+            transition: all 0.2s ease; -webkit-tap-highlight-color: transparent; font-family: Arial, sans-serif;
         }
-        .exit-button:hover {
-            color: var(--text-color);
-            transform: scale(1.1);
-        }
-        @media (max-width: 600px) {
-            .setup-title { margin-top: 40px; }
-        }
+        .exit-button:hover { color: var(--text-color); transform: scale(1.1); }
     </style>
 </head>
 <body>
 
-    <a href="https://mastersabba.github.io/MasterSabba/" class="exit-button" title="Torna all'Hub">×</a>
+    <!-- Sostituisci l'href con il percorso corretto del tuo Hub (es. "../" se l'hub è nella cartella principale) -->
+    <a href="https://mastersabba.github.io/TEST/" class="exit-button" title="Torna all'Hub">×</a>
 
     <div id="setup-screen">
         <h1 class="setup-title"><span class="master-text">MASTER</span>WORDLE</h1>
@@ -241,40 +217,10 @@
     </div>
 
     <script>
-        // --- DIZIONARI AMPLIATI E COMPLESSI ---
         const DICTIONARIES = {
-            4: [
-                "CAOS", "MITO", "EROE", "FATO", "BUIO", "GELO", "OASI", "ARTE",
-                "DATO", "IENA", "LUNA", "NERO", "PANE", "RISO", "SOLE", "TEMA",
-                "URTO", "VERO", "ZERO", "ALBA", "CENA", "DITO", "ELFO", "FARO",
-                "GARA", "LAGO", "MARE", "NODO", "ORSO", "PESO", "RANA", "SETE",
-                "TOPO", "VINO", "ZONA", "FILO", "ROSA", "LUME", "LUCE", "CANE"
-            ],
-            5: [
-                "XENON", "GHEBO", "ZOLFO", "SFINGE", "QUASI", "FLUTTO", "AMPIO",
-                "BOZZA", "CEFFO", "DRAGA", "ELUDA", "FOIBA", "GIGLI", "IMBUTO",
-                "LICEI", "MUFFA", "NESSI", "OVVIO", "PIEVE", "TRUCE", "UMILI",
-                "VIZIO", "ZAPPA", "ABATE", "BACCO", "CAUTO", "DENSO", "EBANO",
-                "FAIDA", "GOBBO", "ICONA", "LAUTO", "MADIA", "NAFTA", "OVALE",
-                "PACCO", "QUOTA", "RABBI", "SACRO", "TASSO", "UDITO", "VASTO",
-                "ZUFFA", "ACUME", "CEDRO", "DRAGO", "ESULE", "FOSSA", "IELLA",
-                "LINCE", "MESSE", "NINFA", "OPERA", "PIEGA", "RESTO", "TRAMA",
-                "USURA", "ZEPPA", "KARMA", "VENTO", "BRAVO", "SALTO", "PIANO",
-                "CERCA", "VISTA", "FONDO", "LARGO", "PRIMO", "NUOVO"
-            ],
-            6: [
-                "ABISSO", "IGNAVO", "ONESTO", "SANGUE", "SQUAMA", "UTOPIA",
-                "VORTICE", "BRULLO", "CHIOSA", "DEDALO", "EMPITO", "BIANCO",
-                "CENTRO", "DIVANO", "ESTATE", "FAVOLA", "GIALLO", "IGNOTO",
-                "LAVORO", "MATITA", "NATURA", "ORARIO", "QUADRO", "REGALO",
-                "SALUTE", "TAVOLO", "USCITA", "VALORE", "ALUNNO", "BARONE",
-                "CADUTA", "DEBOLE", "ERRATO", "FISICO", "GROSSO", "IMPERO",
-                "LEGAME", "METODO", "NUVOLA", "OTTAVO", "PAROLA", "QUIETO",
-                "RIPOSO", "STRADA", "TESORO", "VEDERE", "CHIESA", "DUBBIO",
-                "ESTESO", "FREDDO", "GIORNO", "IMBUTO", "MOSTRO", "NEBBIA",
-                "OSCURO", "POPOLO", "QUARZO", "ROCCIA", "SPIRTO", "TRUCCO",
-                "URBANO", "VELENO"
-            ]
+            4: ["CAOS", "MITO", "EROE", "FATO", "BUIO", "GELO", "OASI", "ARTE", "DATO", "IENA", "LUNA", "NERO", "PANE", "RISO", "SOLE", "TEMA", "URTO", "VERO", "ZERO", "ALBA"],
+            5: ["XENON", "GHEBO", "ZOLFO", "SFINGE", "QUASI", "FLUTTO", "AMPIO", "BOZZA", "CEFFO", "DRAGA", "ELUDA", "FOIBA", "GIGLI", "IMBUTO", "LICEI", "MUFFA", "NESSI", "OVVIO", "PIEVE"],
+            6: ["ABISSO", "IGNAVO", "ONESTO", "SANGUE", "SQUAMA", "UTOPIA", "VORTICE", "BRULLO", "CHIOSA", "DEDALO", "EMPITO", "BIANCO", "CENTRO", "DIVANO", "ESTATE"]
         };
 
         const MAX_TRIES = 6;
@@ -283,14 +229,12 @@
         let guesses = [];
         let currentGuessIndex = 0;
         let isGameOver = false;
-        let roundFinished = false; // Gestione stato per la riapertura corretta del Modal
+        let roundFinished = false; 
 
-        // Controllo se esiste già la chiave corretta o quella vecchia con il typo per non perdere i dati locali esistenti
         let storageKey = localStorage.getItem('masterWordleStats') ? 'masterWordleStats' : 'masterWoordleStats';
         let stats = JSON.parse(localStorage.getItem(storageKey)) || {
             played: 0, wins: 0, currentStreak: 0, maxStreak: 0, points: 0
         };
-        // Se usava la vecchia chiave, la normalizziamo su quella corretta
         if (storageKey === 'masterWoordleStats') {
             localStorage.setItem('masterWordleStats', JSON.stringify(stats));
             localStorage.removeItem('masterWoordleStats');
@@ -365,7 +309,6 @@
         }
 
         function handleInput(key) {
-            // Blocca l'input se il gioco è finito o se il modal delle info/statistiche è aperto a schermo
             if (isGameOver || document.getElementById("modal").style.display === "flex") return;
             let currentWord = guesses[currentGuessIndex];
 
@@ -449,38 +392,35 @@
         }
 
         function updateStats(isWin) {
-    isGameOver = true;
-    roundFinished = true;
-    stats.played++;
-    
-    if (isWin) {
-        stats.wins++;
-        stats.currentStreak++;
-        if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
-        
-        const difficultyMultiplier = WORD_LENGTH - 3;
-        const basePoints = (MAX_TRIES - currentGuessIndex) * 15;
-        const pointsGained = basePoints * difficultyMultiplier;
-        
-        stats.points += pointsGained;
+            isGameOver = true;
+            roundFinished = true;
+            stats.played++;
+            
+            if (isWin) {
+                stats.wins++;
+                stats.currentStreak++;
+                if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
+                
+                const difficultyMultiplier = WORD_LENGTH - 3;
+                const basePoints = (MAX_TRIES - currentGuessIndex) * 15;
+                const pointsGained = basePoints * difficultyMultiplier;
+                
+                stats.points += pointsGained;
+            } else {
+                stats.currentStreak = 0;
+            }
 
-        // AGGIUNGI QUESTO PER AGGIORNARE L'HUB PRINCIPALE:
-        window.parent.postMessage({ type: 'GAME_WIN', gameKey: 'master-wordle' }, '*');
-
-    } else {
-        stats.currentStreak = 0;
-    }
-
-    localStorage.setItem('masterWordleStats', JSON.stringify(stats));
-    localStorage.setItem("points_masterwordle", stats.points);
-    
-    document.getElementById("global-points").innerHTML = `🪙 ${stats.points}`;
-    const saveIndicator = document.getElementById("save-indicator");
-    saveIndicator.style.opacity = 1;
-    setTimeout(() => saveIndicator.style.opacity = 0, 3000);
-    
-    setTimeout(() => showStatsModal(), 1500);
-}
+            // Salvataggio nel localStorage condiviso
+            localStorage.setItem('masterWordleStats', JSON.stringify(stats));
+            localStorage.setItem("points_masterwordle", stats.points);
+            
+            document.getElementById("global-points").innerHTML = `🪙 ${stats.points}`;
+            const saveIndicator = document.getElementById("save-indicator");
+            saveIndicator.style.opacity = 1;
+            setTimeout(() => saveIndicator.style.opacity = 0, 3000);
+            
+            setTimeout(() => showStatsModal(), 1500);
+        }
 
         function showMessage(msg, keepAlive = false) {
             messageBox.textContent = msg;
@@ -495,7 +435,6 @@
             document.getElementById("stat-streak").textContent = stats.currentStreak;
             document.getElementById("stat-points").textContent = stats.points;
 
-            // Controllo basato sullo stato persistente del round, non sull'evento di trigger
             if (roundFinished) {
                 document.getElementById("modal-title").textContent = "Analisi Partita";
                 document.getElementById("share-btn").style.display = "block";
@@ -522,10 +461,7 @@
                 }
                 shareText += rowText + "\n";
             }
-            
-            navigator.clipboard.writeText(shareText).then(() => {
-                showMessage("Log copiato negli appunti!");
-            });
+            navigator.clipboard.writeText(shareText).then(() => showMessage("Log copiato negli appunti!"));
         });
 
         document.addEventListener("keydown", (e) => {
@@ -537,7 +473,6 @@
             messageBox.style.opacity = 0;
             initBoard();
         });
-        
         document.getElementById("theme-toggle").addEventListener("click", () => {
             const html = document.documentElement;
             html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
