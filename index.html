@@ -172,8 +172,7 @@
 </head>
 <body>
 
-    <!-- Sostituisci l'href con il percorso corretto del tuo Hub (es. "../" se l'hub è nella cartella principale) -->
-    <a href="https://mastersabba.github.io/TEST/" class="exit-button" title="Torna all'Hub">×</a>
+    <a href="#" onclick="window.close(); return false;" class="exit-button" title="Torna all'Hub">×</a>
 
     <div id="setup-screen">
         <h1 class="setup-title"><span class="master-text">MASTER</span>WORDLE</h1>
@@ -365,7 +364,7 @@
                     tile.classList.add("flip", feedback[i]);
                     
                     const keyEl = document.getElementById(`key-${guess[i]}`);
-                    if (!keyEl.classList.contains("correct")) {
+                    if (keyEl && !keyEl.classList.contains("correct")) {
                         keyEl.classList.remove("present", "absent");
                         keyEl.classList.add(feedback[i]);
                     }
@@ -396,6 +395,7 @@
             roundFinished = true;
             stats.played++;
             
+            let pointsGained = 0;
             if (isWin) {
                 stats.wins++;
                 stats.currentStreak++;
@@ -403,14 +403,20 @@
                 
                 const difficultyMultiplier = WORD_LENGTH - 3;
                 const basePoints = (MAX_TRIES - currentGuessIndex) * 15;
-                const pointsGained = basePoints * difficultyMultiplier;
+                pointsGained = basePoints * difficultyMultiplier;
                 
                 stats.points += pointsGained;
+
+                let winsWordle = parseInt(localStorage.getItem("wins_masterwordle")) || 0;
+                localStorage.setItem("wins_masterwordle", winsWordle + 1);
+
+                const winMsg = { type: 'GAME_WIN', gameKey: 'master-wordle', points: pointsGained };
+                if (window.opener) window.opener.postMessage(winMsg, '*');
+                if (window.parent && window.parent !== window) window.parent.postMessage(winMsg, '*');
             } else {
                 stats.currentStreak = 0;
             }
 
-            // Salvataggio nel localStorage condiviso
             localStorage.setItem('masterWordleStats', JSON.stringify(stats));
             localStorage.setItem("points_masterwordle", stats.points);
             
@@ -455,27 +461,43 @@
                 let rowText = "";
                 for (let j = 0; j < WORD_LENGTH; j++) {
                     const tile = document.getElementById(`tile-${i}-${j}`);
-                    if (tile.classList.contains("correct")) rowText += "🟩";
-                    else if (tile.classList.contains("present")) rowText += "🟨";
+                    if (tile && tile.classList.contains("correct")) rowText += "🟩";
+                    else if (tile && tile.classList.contains("present")) rowText += "🟨";
                     else rowText += "⬛";
                 }
                 shareText += rowText + "\n";
             }
-            navigator.clipboard.writeText(shareText).then(() => showMessage("Log copiato negli appunti!"));
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showMessage("Risultato copiato negli appunti!");
+                });
+            } else {
+                showMessage("Copia non supportata dal browser");
+            }
         });
 
-        document.addEventListener("keydown", (e) => {
-            if (document.getElementById("setup-screen").style.display !== "none") return;
-            handleInput(e.key);
-        });
-        document.getElementById("stats-toggle").addEventListener("click", () => showStatsModal());
         document.getElementById("restart-btn").addEventListener("click", () => {
-            messageBox.style.opacity = 0;
             initBoard();
         });
+
         document.getElementById("theme-toggle").addEventListener("click", () => {
-            const html = document.documentElement;
-            html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
+            const currentTheme = document.documentElement.getAttribute("data-theme");
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", newTheme);
+        });
+
+        document.getElementById("stats-toggle").addEventListener("click", () => {
+            showStatsModal();
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace') {
+                handleInput('DEL');
+            } else if (e.key === 'Enter') {
+                handleInput('ENTER');
+            } else if (/^[a-zA-Z]$/.test(e.key)) {
+                handleInput(e.key.toUpperCase());
+            }
         });
     </script>
 </body>
