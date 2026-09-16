@@ -449,34 +449,38 @@
         }
 
         function updateStats(isWin) {
-            isGameOver = true;
-            roundFinished = true; // Il round è ufficialmente concluso
-            stats.played++;
-            
-            if (isWin) {
-                stats.wins++;
-                stats.currentStreak++;
-                if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
-                
-                const difficultyMultiplier = WORD_LENGTH - 3;
-                const basePoints = (MAX_TRIES - currentGuessIndex) * 15;
-                const pointsGained = basePoints * difficultyMultiplier;
-                
-                stats.points += pointsGained;
-            } else {
-                stats.currentStreak = 0;
-            }
+    isGameOver = true;
+    roundFinished = true;
+    stats.played++;
+    
+    if (isWin) {
+        stats.wins++;
+        stats.currentStreak++;
+        if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
+        
+        const difficultyMultiplier = WORD_LENGTH - 3;
+        const basePoints = (MAX_TRIES - currentGuessIndex) * 15;
+        const pointsGained = basePoints * difficultyMultiplier;
+        
+        stats.points += pointsGained;
 
-            localStorage.setItem('masterWordleStats', JSON.stringify(stats));
-            localStorage.setItem("points_masterwordle", stats.points);
-            
-            document.getElementById("global-points").innerHTML = `🪙 ${stats.points}`;
-            const saveIndicator = document.getElementById("save-indicator");
-            saveIndicator.style.opacity = 1;
-            setTimeout(() => saveIndicator.style.opacity = 0, 3000);
-            
-            setTimeout(() => showStatsModal(), 1500);
-        }
+        // AGGIUNGI QUESTO PER AGGIORNARE L'HUB PRINCIPALE:
+        window.parent.postMessage({ type: 'GAME_WIN', gameKey: 'master-wordle' }, '*');
+
+    } else {
+        stats.currentStreak = 0;
+    }
+
+    localStorage.setItem('masterWordleStats', JSON.stringify(stats));
+    localStorage.setItem("points_masterwordle", stats.points);
+    
+    document.getElementById("global-points").innerHTML = `🪙 ${stats.points}`;
+    const saveIndicator = document.getElementById("save-indicator");
+    saveIndicator.style.opacity = 1;
+    setTimeout(() => saveIndicator.style.opacity = 0, 3000);
+    
+    setTimeout(() => showStatsModal(), 1500);
+}
 
         function showMessage(msg, keepAlive = false) {
             messageBox.textContent = msg;
