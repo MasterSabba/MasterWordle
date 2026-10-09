@@ -396,26 +396,23 @@
             stats.played++;
             
             let pointsGained = 0;
-            if (isWin) {
-                stats.wins++;
-                stats.currentStreak++;
-                if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
-                
-                const difficultyMultiplier = WORD_LENGTH - 3;
-                const basePoints = (MAX_TRIES - currentGuessIndex) * 15;
-                pointsGained = basePoints * difficultyMultiplier;
-                
-                stats.points += pointsGained;
+           if (isWin) {
+    stats.wins++;
+    stats.currentStreak++;
+    if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
+    
+    const difficultyMultiplier = WORD_LENGTH - 3;
+    const basePoints = (MAX_TRIES - currentGuessIndex) * 15;
+    pointsGained = basePoints * difficultyMultiplier;
+    
+    stats.points += pointsGained;
 
-                let winsWordle = parseInt(localStorage.getItem("wins_masterwordle")) || 0;
-                localStorage.setItem("wins_masterwordle", winsWordle + 1);
+    let winsWordle = parseInt(localStorage.getItem("wins_masterwordle")) || 0;
+    localStorage.setItem("wins_masterwordle", winsWordle + 1);
 
-                const winMsg = { type: 'GAME_WIN', gameKey: 'master-wordle', points: pointsGained };
-                if (window.opener) window.opener.postMessage(winMsg, '*');
-                if (window.parent && window.parent !== window) window.parent.postMessage(winMsg, '*');
-            } else {
-                stats.currentStreak = 0;
-            }
+    // Invia i punti all'Hub
+    inviaVittoriaAlHub(pointsGained || 50);
+}
 
             localStorage.setItem('masterWordleStats', JSON.stringify(stats));
             localStorage.setItem("points_masterwordle", stats.points);
@@ -499,6 +496,15 @@
                 handleInput(e.key.toUpperCase());
             }
         });
+        function inviaVittoriaAlHub(puntiBonus = 50) {
+  const target = window.opener || (window.parent !== window ? window.parent : null);
+  if (target) {
+    target.postMessage({
+      gameKey: 'master-wordle',
+      points: puntiBonus
+    }, '*');
+  }
+}
     </script>
 </body>
 </html>
