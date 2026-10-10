@@ -58,7 +58,7 @@
         }
 
         h1 { font-size: 1.8rem; font-weight: 900; letter-spacing: 2px; margin: 0; }
-        .master-text { color: var(--correct-bg); text-shadow: var(--glow); }
+        .WORD-text { color: var(--correct-bg); text-shadow: var(--glow); }
 
         .header-btns { display: flex; gap: 15px; align-items: center; }
         .header-btns button {
@@ -175,15 +175,15 @@
     <a href="#" onclick="window.close(); return false;" class="exit-button" title="Torna all'Hub">×</a>
 
     <div id="setup-screen">
-        <h1 class="setup-title"><span class="master-text">MASTER</span>WORDLE</h1>
+        <h1 class="setup-title"><span class="WORD-text">WORD</span>RUSH</h1>
         <p style="margin-bottom: 20px; color: var(--filled-border);">Seleziona la difficoltà:</p>
         <button class="mode-btn" onclick="startGame(4)">4 Lettere (Facile)</button>
         <button class="mode-btn" onclick="startGame(5)">5 Lettere (Standard)</button>
-        <button class="mode-btn" style="border-color: var(--correct-bg); box-shadow: var(--glow);" onclick="startGame(6)">6 Lettere (MASTER)</button>
+        <button class="mode-btn" style="border-color: var(--correct-bg); box-shadow: var(--glow);" onclick="startGame(6)">6 Lettere (WORD)</button>
     </div>
 
     <header>
-        <h1><span class="master-text">MASTER</span>WORDLE</h1>
+        <h1><span class="WORD-text">WORD</span>RUSH</h1>
         <div class="header-btns">
             <div class="points-display" id="global-points" title="Punti salvati nel LocalStorage">🪙 0</div>
             <button id="theme-toggle" title="Cambia Tema">🌓</button>
@@ -230,13 +230,13 @@
         let isGameOver = false;
         let roundFinished = false; 
 
-        let storageKey = localStorage.getItem('Word RushStats') ? 'Word RushStats' : 'masterWoordleStats';
+        let storageKey = localStorage.getItem('Word RushStats') ? 'Word RushStats' : 'WORDWoordleStats';
         let stats = JSON.parse(localStorage.getItem(storageKey)) || {
             played: 0, wins: 0, currentStreak: 0, maxStreak: 0, points: 0
         };
-        if (storageKey === 'masterWoordleStats') {
+        if (storageKey === 'WORDWoordleStats') {
             localStorage.setItem('Word RushStats', JSON.stringify(stats));
-            localStorage.removeItem('masterWoordleStats');
+            localStorage.removeItem('WORDWoordleStats');
         }
 
         document.getElementById("global-points").innerHTML = `🪙 ${stats.points}`;
@@ -380,7 +380,7 @@
 
         function evaluateGame(guess, feedback) {
             if (guess === targetWord) {
-                showMessage("MASTER MINDS THINK ALIKE!", true);
+                showMessage("WORD MINDS THINK ALIKE!", true);
                 updateStats(true);
             } else if (currentGuessIndex === MAX_TRIES - 1) {
                 showMessage(`GAME OVER. La parola era: ${targetWord}`, true);
@@ -407,8 +407,8 @@
     
     stats.points += pointsGained;
 
-    let winsWordle = parseInt(localStorage.getItem("wins_Word Rush")) || 0;
-    localStorage.setItem("wins_Word Rush", winsWordle + 1);
+    let winsRUSH = parseInt(localStorage.getItem("wins_Word Rush")) || 0;
+    localStorage.setItem("wins_Word Rush", winsRUSH + 1);
 
     // Invia i punti all'Hub
     inviaVittoriaAlHub(pointsGained || 50);
@@ -452,7 +452,7 @@
         }
 
         document.getElementById("share-btn").addEventListener("click", () => {
-            let diffStr = WORD_LENGTH === 4 ? "Facile" : WORD_LENGTH === 5 ? "Standard" : "MASTER";
+            let diffStr = WORD_LENGTH === 4 ? "Facile" : WORD_LENGTH === 5 ? "Standard" : "WORD";
             let shareText = `Word Rush (${diffStr}) ${currentGuessIndex + 1}/${MAX_TRIES}\nPunti totali: ${stats.points} 🪙\n\n`;
             for (let i = 0; i <= currentGuessIndex; i++) {
                 let rowText = "";
@@ -500,7 +500,7 @@
   const target = window.opener || (window.parent !== window ? window.parent : null);
   if (target) {
     target.postMessage({
-      gameKey: 'master-wordle',
+      gameKey: 'WORD-RUSH',
       points: puntiBonus
     }, '*');
   }
