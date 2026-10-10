@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MasterWordle</title>
+    <title>Word Rush</title>
     <style>
         :root {
             --bg-color: #0d1117;
@@ -230,17 +230,17 @@
         let isGameOver = false;
         let roundFinished = false; 
 
-        let storageKey = localStorage.getItem('masterWordleStats') ? 'masterWordleStats' : 'masterWoordleStats';
+        let storageKey = localStorage.getItem('Word RushStats') ? 'Word RushStats' : 'masterWoordleStats';
         let stats = JSON.parse(localStorage.getItem(storageKey)) || {
             played: 0, wins: 0, currentStreak: 0, maxStreak: 0, points: 0
         };
         if (storageKey === 'masterWoordleStats') {
-            localStorage.setItem('masterWordleStats', JSON.stringify(stats));
+            localStorage.setItem('Word RushStats', JSON.stringify(stats));
             localStorage.removeItem('masterWoordleStats');
         }
 
         document.getElementById("global-points").innerHTML = `🪙 ${stats.points}`;
-        localStorage.setItem("points_masterwordle", stats.points);
+        localStorage.setItem("points_Word Rush", stats.points);
         const board = document.getElementById("board");
         const keyboard = document.getElementById("keyboard");
         const messageBox = document.getElementById("message");
@@ -407,15 +407,15 @@
     
     stats.points += pointsGained;
 
-    let winsWordle = parseInt(localStorage.getItem("wins_masterwordle")) || 0;
-    localStorage.setItem("wins_masterwordle", winsWordle + 1);
+    let winsWordle = parseInt(localStorage.getItem("wins_Word Rush")) || 0;
+    localStorage.setItem("wins_Word Rush", winsWordle + 1);
 
     // Invia i punti all'Hub
     inviaVittoriaAlHub(pointsGained || 50);
 }
 
-            localStorage.setItem('masterWordleStats', JSON.stringify(stats));
-            localStorage.setItem("points_masterwordle", stats.points);
+            localStorage.setItem('Word RushStats', JSON.stringify(stats));
+            localStorage.setItem("points_Word Rush", stats.points);
             
             document.getElementById("global-points").innerHTML = `🪙 ${stats.points}`;
             const saveIndicator = document.getElementById("save-indicator");
@@ -453,7 +453,7 @@
 
         document.getElementById("share-btn").addEventListener("click", () => {
             let diffStr = WORD_LENGTH === 4 ? "Facile" : WORD_LENGTH === 5 ? "Standard" : "MASTER";
-            let shareText = `MasterWordle (${diffStr}) ${currentGuessIndex + 1}/${MAX_TRIES}\nPunti totali: ${stats.points} 🪙\n\n`;
+            let shareText = `Word Rush (${diffStr}) ${currentGuessIndex + 1}/${MAX_TRIES}\nPunti totali: ${stats.points} 🪙\n\n`;
             for (let i = 0; i <= currentGuessIndex; i++) {
                 let rowText = "";
                 for (let j = 0; j < WORD_LENGTH; j++) {
